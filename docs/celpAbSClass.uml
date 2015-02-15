@@ -1,0 +1,56 @@
+@startuml
+
+	class LongTermPredictor {
+		+LongTermPredictor()
+		+void UpdatePredictor(double[] buffer)
+		+double[] Filter()
+		+double Pitch()
+		+double PitchGain()
+		-double pitch
+		-double gain
+	}
+	
+	class ClosedLoopFilter {
+		+ClosedLoopFilter(double[] initCoeffs)
+		+void UpdateFilter(double[] buffer)
+		+double[] Filter()
+		-double[] coefficients
+	}
+	
+	class ShortTermPredictor {
+
+	}
+	class ErrorWeight {
+
+	}
+	
+	class Innovator {
+		+nnovator()
+		+double[] GetNextInnovation()
+		-double[][] codebook
+		-int lastIndex
+	}
+	
+	class AnalyzeSynthesize {
+		+AnalyzeSynthesize()
+		+void Run(double[] x)
+		+double[] Output()
+		+double[] Coefficients()
+		+double[] Residual()
+		-double[] coefficients
+		-double[] residual
+		-double[] output
+		-Innovator
+		-ShortTermPredictor
+		-ClosedLoopPredictor
+		-LongTermPredictor
+	}
+	
+	AnalyzeSynthesize <.. Innovator
+	AnalyzeSynthesize <.. LongTermPredictor 
+	AnalyzeSynthesize <.. ShortTermPredictor
+	AnalyzeSynthesize <.. ErrorWeight	
+	ClosedLoopFilter <|.. ShortTermPredictor
+	ClosedLoopFilter <|.. ErrorWeight
+	
+@enduml
