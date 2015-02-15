@@ -25,7 +25,7 @@
 	}
 	
 	class Innovator {
-		+nnovator()
+		+Innovator()
 		+double[] GetNextInnovation()
 		-double[][] codebook
 		-int lastIndex

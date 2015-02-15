@@ -1,0 +1,18 @@
+@startuml
+start
+repeat
+	:Update long term predictor based on frame x;
+	:Update short term predictor based on frame x;
+	:Pass x through the error weight filter;
+	repeat
+		:Pass codebook sequence through long term predictor filter;
+		:Pass output of ltp filter through short term predictor filter;
+		:Pass output of stp filter through error weight filter;
+		if (codebook sequence has minimum error?) then (yes)
+			:replace stored index, error, and filtered sequence;
+		endif
+	repeat while (codebook not at end)
+repeat while (more frames)
+stop
+
+@enduml
