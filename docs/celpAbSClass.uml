@@ -25,10 +25,12 @@
 	}
 	
 	class Innovator {
-		+Innovator()
+		+Innovator(int sequenceCount, int frameSize)
 		+double[] GetNextInnovation()
 		-double[][] codebook
-		-int lastIndex
+		-int index
+		-int sequenceCount
+		-int frameSize
 	}
 	
 	class AnalyzeSynthesize {
