@@ -11,8 +11,8 @@ classdef Innovator < handle
         function obj = Innovator(sequenceCount, frameSize)
             obj.index = 1;
             obj.codebook = normrnd(0,1,sequenceCount,frameSize);
-            obj.sequenceCount = sequenceCount
-            obj.frameSize = frameSize
+            obj.sequenceCount = sequenceCount;
+            obj.frameSize = frameSize;
         end
         function sequence = NextInnovation(self)
             sequence = self.codebook(self.index);
