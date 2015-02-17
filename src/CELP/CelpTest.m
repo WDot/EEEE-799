@@ -1,8 +1,8 @@
-innovator = Innovator(100,160);
+innovator = Innovator(100000,160);
+range = -5:.1:5;
+bincounts = zeros(size(range));
 for i = 1:innovator.sequenceCount
-    if sum(abs(innovator.NextInnovation()) - abs(innovator.codebook(i))) > 0
-        fprintf('Codebook read %d failed.\n',i);
-    else
-        fprintf('Success\n');
-    end
+    sequence = innovator.NextInnovation();
+    bincounts = bincounts + histc(sequence,range);
 end
+plot(bincounts);

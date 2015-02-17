@@ -1,4 +1,5 @@
 classdef (Abstract) ClosedLoopFilter < handle
+    %ClosedLoopFilter - Any filter updated by feedback data
     
     properties
         coefficients
@@ -9,5 +10,10 @@ classdef (Abstract) ClosedLoopFilter < handle
         Filter(self,buffer)
     end
     
+    methods
+        function obj = ClosedLoopFilter(filterOrder)
+            obj.coefficients = zeros(1,filterOrder);
+        end
+    end
 end
 

@@ -1,5 +1,7 @@
 classdef Innovator < handle
 
+    %Innovator - Random gaussian codebook used to feed CELP analysis/synth
+    
     properties
         codebook
         index

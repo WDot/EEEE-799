@@ -11,7 +11,7 @@
 	}
 	
 	class ClosedLoopFilter {
-		+ClosedLoopFilter(double[] initCoeffs)
+		+ClosedLoopFilter(int filterOrder)
 		+void UpdateFilter(double[] buffer)
 		+double[] Filter(double[] buffer)
 		-double[] coefficients
