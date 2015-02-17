@@ -1,8 +1,10 @@
-innovator = Innovator(100000,160);
-range = -5:.1:5;
-bincounts = zeros(size(range));
+[pathstr,~,~] = fileparts(mfilename('fullpath'));
+innovator = Innovator(100,160);
+[testVector, Fs] = audioread(strcat(pathstr,'/../../testvectors/test.wav'));
+stp = ShortTermPredictor(20);
+tv = testVector(1:160)';
+stp.UpdateFilter(tv);
+errors = zeros(1,innovator.sequenceCount);
 for i = 1:innovator.sequenceCount
-    sequence = innovator.NextInnovation();
-    bincounts = bincounts + histc(sequence,range);
+    errors(i) = mean((tv - stp.Filter(innovator.NextInnovation)).^2);
 end
-plot(bincounts);
