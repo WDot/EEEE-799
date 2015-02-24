@@ -17,7 +17,7 @@ classdef Innovator < handle
             obj.frameSize = frameSize;
         end
         function sequence = NextInnovation(self)
-            sequence = self.codebook(self.index);
+            sequence = self.codebook(self.index,:);
             if self.index < self.sequenceCount
                 self.index = self.index + 1;
             else

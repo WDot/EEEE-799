@@ -13,7 +13,7 @@ classdef ShortTermPredictor < ClosedLoopFilter
         function UpdateFilter(self,buffer)
             positiveTimeLags = xcorr(buffer,'biased');
             positiveTimeLags = positiveTimeLags(length(buffer):end);
-            self.coefficients =  levinson(positiveTimeLags,length(self.coefficients));
+            self.coefficients =  levinson(positiveTimeLags,length(self.coefficients) - 1);
             
         end
         
