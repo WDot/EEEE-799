@@ -13,15 +13,15 @@ classdef WeighingFilter < ClosedLoopFilter
         end
         
         function UpdateFilter(self,coeffs)
-            for i = 1:length(self.coefficients)
-                self.coefficients(i)  = coeffs(i) / (.9)^(i - 1);
-                self.coefficients2(i) = coeffs(i) / (.5)^(i - 1);
-            end
+            %BANDWIDTH EXPANSION
+            self.coefficients = coeffs .* (.9) .^(0:(length(coeffs) - 1));
+            self.coefficients2 = coeffs .* (.5) .^(0:(length(coeffs) - 1));
         end
         
         function output = Filter(self,buffer)
             output = filter(self.coefficients,self.coefficients2,buffer);
         end
+        
     end
     
 end
