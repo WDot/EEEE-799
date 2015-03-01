@@ -22,7 +22,7 @@ classdef ShortTermPredictor < ClosedLoopFilter
         end
         
         function output = Filter(self,buffer)
-            [output, self.testZf] = filter(1,self.coefficients,buffer,self.zf);  
+            output = filter(1,self.coefficients,buffer);  
         end
         
         function UpdateZf(self)
