@@ -4,8 +4,7 @@ SUBFRAME_SIZE = FRAME_SIZE / 4;
 FILTER_ORDER = 10;
 CODEBOOK_SIZE = 512;
 SCALE_FACTOR = 4;
-%VALID_LAGS = 2:147;
-VALID_LAGS=2:((128*SCALE_FACTOR) + 20);
+VALID_LAGS = 2:147;
 %Make ready the input and output files
 [pathstr,~,~] = fileparts(mfilename('fullpath'));
 [testVector, Fs] = audioread(strcat(pathstr,'/../../testvectors/handel.wav'));
@@ -18,7 +17,7 @@ W = WeighingFilter(FILTER_ORDER);
 %by zero errors, should quickly be replaced with real data
 [bHpf,aHpf] = butter(10,.01,'high');
 adaptiveCodebook   = zeros(1,160);
-adaptiveCodebookInterp = zeros(1,length(adaptiveCodebook)*SCALE_FACTOR);
+%adaptiveCodebookInterp = zeros(1,length(adaptiveCodebook)*SCALE_FACTOR);
 stochasticCodebook = max(-1,(min(1,ceil(randn(CODEBOOK_SIZE,SUBFRAME_SIZE)))))*max(testVector);
 tic
 for frameIndex=1:FRAME_SIZE:length(testVector)
