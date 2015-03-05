@@ -7,7 +7,7 @@ SCALE_FACTOR = 4;
 VALID_LAGS = 2:147;
 %Make ready the input and output files
 [pathstr,~,~] = fileparts(mfilename('fullpath'));
-[testVector, Fs] = audioread(strcat(pathstr,'/../../testvectors/handel.wav'));
+[testVector, Fs] = audioread(strcat(pathstr,'/../../testvectors/test.wav'));
 testVector = double(testVector(1:(floor(length(testVector) / FRAME_SIZE) * FRAME_SIZE)));
 synthVal = zeros(size(testVector));
 %Create the tools for analysis/synthesis
@@ -79,7 +79,7 @@ for frameIndex=1:FRAME_SIZE:length(testVector)
 %         figure(5);
 %         plot(bestExcitationAcb);
 %         title('Best Excitation');
-        targetErrorScb = targetErrorAcb - bestExcitationAcb;
+        targetErrorScb = targetErrorAcb - W.Filter(lp.Filter(bestExcitationAcb));
         bestGainScb = 0;
         bestMatchScb = 0;
         bestExcitationScb = zeros(1,SUBFRAME_SIZE);
@@ -103,6 +103,7 @@ for frameIndex=1:FRAME_SIZE:length(testVector)
 %        adaptiveCodebookInterp = interp(adaptiveCodebook,SCALE_FACTOR);
         synthVal((frameIndex + subframeIndex - 1):(frameIndex + subframeIndex + SUBFRAME_SIZE -2)) = lp.Filter(bestExcitationTotal);
         lp.UpdateZf();
+        W.UpdateZf();
     end
 end
 toc
@@ -111,6 +112,9 @@ fprintf('MSE: %f\n',mean((testVector - synthVal).^2));
 BOUNDS=1:length(testVector);
 
 plot(BOUNDS,testVector(BOUNDS),'r',BOUNDS,synthVal(BOUNDS),'b');
+title('Synthesis (Red is original, blue is synthesized)');
+xlabel('Sample');
+ylabel('Magnitude');
 
 % [b,a] = butter(10,.8);
 % testVector2 = filter(b,a,testVector);

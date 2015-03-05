@@ -3,6 +3,8 @@ classdef WeighingFilter < ClosedLoopFilter
     
     properties
         coefficients2
+        zf
+        testZf
     end
     
     
@@ -10,18 +12,22 @@ classdef WeighingFilter < ClosedLoopFilter
         function obj = WeighingFilter(filterOrder)
             obj = obj@ClosedLoopFilter(filterOrder);
             obj.coefficients2 = zeros(1,filterOrder);
+            obj.zf = zeros(1,filterOrder - 1);
         end
         
         function UpdateFilter(self,coeffs)
             %BANDWIDTH EXPANSION
-            self.coefficients = coeffs .* (.9) .^(0:(length(coeffs) - 1));
-            self.coefficients2 = coeffs .* (.5) .^(0:(length(coeffs) - 1));
+            self.coefficients = coeffs;
+            self.coefficients2 = coeffs .* (.85) .^(0:(length(coeffs) - 1));
         end
         
         function output = Filter(self,buffer)
-            output = filter(self.coefficients,self.coefficients2,buffer);
+            [output,self.testZf] = filter(self.coefficients,self.coefficients2,buffer,self.zf);
         end
         
+        function UpdateZf(self)
+            self.zf = self.testZf;
+        end
     end
     
 end
