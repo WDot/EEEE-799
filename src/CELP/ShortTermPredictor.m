@@ -25,6 +25,10 @@ classdef ShortTermPredictor < ClosedLoopFilter
             output = filter(1,self.coefficients,buffer);  
         end
         
+        function output = InverseFilter(self,buffer)
+            output = filter(self.coefficients,1,buffer);  
+        end
+        
         function UpdateZf(self)
             self.zf = self.testZf;
         end
