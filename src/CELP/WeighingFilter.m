@@ -3,8 +3,6 @@ classdef WeighingFilter < ClosedLoopFilter
     
     properties
         coefficients2
-        zf
-        testZf
     end
     
     
@@ -12,7 +10,6 @@ classdef WeighingFilter < ClosedLoopFilter
         function obj = WeighingFilter(filterOrder)
             obj = obj@ClosedLoopFilter(filterOrder);
             obj.coefficients2 = zeros(1,filterOrder);
-            obj.zf = zeros(1,filterOrder - 1);
         end
         
         function UpdateFilter(self,coeffs)
@@ -22,15 +19,15 @@ classdef WeighingFilter < ClosedLoopFilter
         end
         
         function output = Filter(self,buffer)
-            [output,self.testZf] = filter(self.coefficients,self.coefficients2,buffer,self.zf);
+            [output,self.zfCandidate] = filter(self.coefficients,self.coefficients2,buffer,self.zf);
         end
         
         function output = InverseFilter(self,buffer)
-            [output,self.testZf] = filter(self.coefficients2,self.coefficients,buffer,self.zf);
+            [output,self.zfCandidate] = filter(self.coefficients2,self.coefficients,buffer,self.zf);
         end
         
         function UpdateZf(self)
-            self.zf = self.testZf;
+            self.zf = self.zfCandidate;
         end
     end
     

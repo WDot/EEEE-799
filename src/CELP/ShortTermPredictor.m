@@ -2,15 +2,12 @@ classdef ShortTermPredictor < ClosedLoopFilter
     %ShortTermPredictor - Optimum all-pole filter based on short term data 
     
     properties
-        testZf
-        zf
     end
     
     
     methods
         function obj = ShortTermPredictor(filterOrder)
             obj = obj@ClosedLoopFilter(filterOrder);
-            obj.zf = zeros(1,filterOrder - 1);
         end
         
         function UpdateFilter(self,buffer)
@@ -22,15 +19,15 @@ classdef ShortTermPredictor < ClosedLoopFilter
         end
         
         function output = Filter(self,buffer)
-            output = filter(1,self.coefficients,buffer);  
+            [output,self.zfCandidate] = filter(1,self.coefficients,buffer,self.zf);  
         end
         
         function output = InverseFilter(self,buffer)
-            output = filter(self.coefficients,1,buffer);  
+            [output,self.zfCandidate] = filter(self.coefficients,1,buffer,self.zf);  
         end
         
         function UpdateZf(self)
-            self.zf = self.testZf;
+            self.zf = self.zfCandidate;
         end
     end
     
