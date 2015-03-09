@@ -1,7 +1,8 @@
 function [codeVal,synthVal] = CELPEncode(testVector)
 %Hardcoded parameters
 FRAME_SIZE = 160;
-SUBFRAME_SIZE = FRAME_SIZE / 4;
+NUM_SUB_FRAMES = 4;
+SUBFRAME_SIZE = FRAME_SIZE / NUM_SUB_FRAMES;
 FILTER_ORDER = 10;
 CODEBOOK_SIZE = 512;
 VALID_LAGS = 20:147;
@@ -12,8 +13,8 @@ synthVal = zeros(size(testVector));
 lp = ShortTermPredictor(FILTER_ORDER);
 W = WeighingFilter(FILTER_ORDER);
 [bHpf,aHpf] = butter(10,.01,'high');
-adaptiveCodebook   = zeros(1,160);
-stochasticCodebook = randn(CODEBOOK_SIZE,SUBFRAME_SIZE);
+adaptiveCodebook   = AdaptiveCodebook(NUM_SUB_FRAMES,SUBFRAME_SIZE,VALID_LAGS);
+stochasticCodebook = StochasticCodebook(CODEBOOK_SIZE,SUBFRAME_SIZE);
 tic
 for frameIndex=1:FRAME_SIZE:length(testVector)
     frame = testVector(frameIndex:(frameIndex + FRAME_SIZE - 1));
@@ -26,57 +27,14 @@ for frameIndex=1:FRAME_SIZE:length(testVector)
         subframe = frame(subframeIndex:(subframeIndex + SUBFRAME_SIZE -1))';
         subframe = filter(bHpf,aHpf,subframe);
         targetErrorAcb = W.InverseFilter(lp.InverseFilter(subframe - zir));
-        bestGainAcb = 0;
-        bestMatchAcb = 0;
-        bestExcitationAcb = zeros(1,SUBFRAME_SIZE);
-        
         %search Adaptive Codebook for best excitation
-        for j = VALID_LAGS
-            if j < SUBFRAME_SIZE
-                %Assumes excitation needs to be repeated no more than 2
-                %times
-                numRepeats = ceil(SUBFRAME_SIZE / j);
-                excitationAcb = repmat(adaptiveCodebook((end - j + 1):end),1,numRepeats);
-                excitationAcb = excitationAcb(1:SUBFRAME_SIZE);
-            else
-                excitationAcb = adaptiveCodebook((end - j):(end - j + SUBFRAME_SIZE - 1));
-            end
-            y = excitationAcb;
-            correlationAcb = y * targetErrorAcb';
-            energyAcb = y * y';
-            gainAcb = (correlationAcb) / (energyAcb);
-            if isnan(gainAcb)
-                gainAcb = 0;
-            end
-            match = abs(gainAcb);
-            if match > bestMatchAcb
-                bestGainAcb = gainAcb;
-                bestMatchAcb = match;
-                bestExcitationAcb = excitationAcb;
-            end
-        end
-        bestExcitationAcb = bestGainAcb * bestExcitationAcb;
+        [bestCodewordAcb,bestGainAcb] = CodebookSearch(@adaptiveCodebook.GetCodeword,targetErrorAcb,adaptiveCodebook.range);
+        bestExcitationAcb = bestGainAcb * adaptiveCodebook.GetCodeword(bestCodewordAcb);
         targetErrorScb = targetErrorAcb - bestExcitationAcb;
-        bestGainScb = 0;
-        bestMatchScb = 0;
-        bestExcitationScb = zeros(1,SUBFRAME_SIZE);
         %search Stochastic Codebook for best excitation
-        for j = 1:CODEBOOK_SIZE
-            excitationScb = stochasticCodebook(j,:);
-            y = excitationScb;
-            correlationScb = y * targetErrorScb';
-            energyScb = y * y';
-            gainScb = (correlationScb) / (energyScb);
-            match = abs(gainScb);
-            if match > bestMatchScb
-                bestGainScb = gainScb;
-                bestMatchScb = match;
-                bestExcitationScb = excitationScb;
-            end
-        end
-        bestExcitationScb = bestGainScb * bestExcitationScb;
+        [bestCodewordScb,bestGainScb] = CodebookSearch(@stochasticCodebook.GetCodeword,targetErrorScb,stochasticCodebook.range);
+        bestExcitationScb = bestGainScb * stochasticCodebook.GetCodeword(bestCodewordScb);
         bestExcitationTotal = bestExcitationScb + bestExcitationAcb;
-        adaptiveCodebook = [adaptiveCodebook((SUBFRAME_SIZE + 1):end) bestExcitationTotal];
         synthVal((frameIndex + subframeIndex - 1):(frameIndex + subframeIndex + SUBFRAME_SIZE -2)) = lp.Filter(bestExcitationTotal);
         lp.UpdateZf();
         W.UpdateZf();

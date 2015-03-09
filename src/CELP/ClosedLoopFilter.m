@@ -19,6 +19,10 @@ classdef (Abstract) ClosedLoopFilter < handle
             obj.zf = zeros(1,filterOrder - 1);
             obj.zfCandidate = zeros(1,filterOrder - 1);
         end
+        
+        function UpdateZf(self)
+            self.zf = self.zfCandidate;
+        end
     end
 end
 

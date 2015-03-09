@@ -25,10 +25,6 @@ classdef WeighingFilter < ClosedLoopFilter
         function output = InverseFilter(self,buffer)
             [output,self.zfCandidate] = filter(self.coefficients2,self.coefficients,buffer,self.zf);
         end
-        
-        function UpdateZf(self)
-            self.zf = self.zfCandidate;
-        end
     end
     
 end
