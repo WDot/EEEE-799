@@ -51,7 +51,7 @@ function [codedFrames,synthVal] = CELPEncode(testVector,stochasticCodebook)
     toc
     fprintf('MSE: %f\n',mean((testVector - synthVal).^2));
     BOUNDS=1:length(testVector);
-
+    figure(1);
     plot(BOUNDS,testVector(BOUNDS),'r',BOUNDS,synthVal(BOUNDS),'b');
     title('Synthesis (Red is original, blue is synthesized)');
     xlabel('Sample');
