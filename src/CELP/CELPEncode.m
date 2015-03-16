@@ -5,8 +5,6 @@ function [codedFrames,synthVal] = CELPEncode(testVector,stochasticCodebook)
     SUBFRAME_SIZE = FRAME_SIZE / NUM_SUB_FRAMES;
     FILTER_ORDER = 10;
     VALID_LAGS = 20:147;
-    %Cheat a little bit, make the vector exactly 160N long
-    testVector = testVector(1:(floor(length(testVector) / FRAME_SIZE) * FRAME_SIZE));
     numFrames = length(testVector) / FRAME_SIZE;
     codedFrames = CodeFrame.CodeFrameArray(numFrames);
     synthVal = zeros(size(testVector));
@@ -49,11 +47,11 @@ function [codedFrames,synthVal] = CELPEncode(testVector,stochasticCodebook)
         frameCount = frameCount + 1;
     end
     toc
-    fprintf('MSE: %f\n',mean((testVector - synthVal).^2));
-    BOUNDS=1:length(testVector);
-    figure(1);
-    plot(BOUNDS,testVector(BOUNDS),'r',BOUNDS,synthVal(BOUNDS),'b');
-    title('Synthesis (Red is original, blue is synthesized)');
-    xlabel('Sample');
-    ylabel('Magnitude');
+%     fprintf('MSE: %f\n',mean((testVector - synthVal).^2)/mean(testVector.^2));
+%     BOUNDS=1:length(testVector);
+%     figure(1);
+%     plot(BOUNDS,testVector(BOUNDS),'r',BOUNDS,synthVal(BOUNDS),'b');
+%     title('Synthesis (Red is original, blue is synthesized)');
+%     xlabel('Sample');
+%     ylabel('Magnitude');
 end
