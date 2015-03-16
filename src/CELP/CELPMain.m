@@ -64,10 +64,9 @@ xlabel('Bits in Quantized Gain');
 ylabel('kBps (20ms/frame times 50 frames)');
 hold off;
 
-% BOUNDS=1:length(synthVal);
-% figure(2);
-% plot(BOUNDS,synthVal(BOUNDS),'r',BOUNDS,synthVal2(BOUNDS),'b');
-% title('Syntheses (Red is Unquantized, blue is Quantized)');
-% xlabel('Sample');
-% ylabel('Magnitude');
-%16-bit coefficients, 16-bit gains
+figure(6);
+plot(1:length(testVector),testVector,'r',1:length(testVector),synthVal,'b');
+title('Syntheses (Red is original, blue is coded)');
+xlabel('Sample');
+ylabel('Magnitude');
+fprintf('MSE: %f\n',mean((testVector - synthVal).^2)/mean(testVector.^2));
