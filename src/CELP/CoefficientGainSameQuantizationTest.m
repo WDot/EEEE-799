@@ -1,8 +1,9 @@
-function [optimumFPPMSE, optimumFPPkBps] = CoefficientGainSameQuantizationTest( codedFrames, sCodebook,testVector )
+function [optimumFPPMSE, optimumFPPkBps, synthVals] = CoefficientGainSameQuantizationTest( codedFrames, sCodebook,testVector )
     MAX_BITS_RANGE = 5:16;
     FILTER_ORDER = 10;
     NUM_SUB_FRAMES = 4;
     MAX_BITS_OFFSET = -4;
+    synthVals = zeros(length(MAX_BITS_RANGE),length(testVector));
     optimumFPPMSE = zeros(1,length(MAX_BITS_RANGE));
     optimumFPPkBps = zeros(1,length(MAX_BITS_RANGE));
     codeValTest = CodeFrame.CodeFrameArray(length(codedFrames));
@@ -15,8 +16,8 @@ function [optimumFPPMSE, optimumFPPkBps] = CoefficientGainSameQuantizationTest( 
             codeValTest(i).GainsToFixedPoint(maxBits - 2,maxBits);
             codeValTest(i).GainsFromFixedPoint(maxBits - 2);
         end
-        synthVal = CELPDecode(codeValTest,sCodebook);
-        optimumFPPMSE(maxBits + MAX_BITS_OFFSET) = mean((synthVal - testVector').^2)/tvPower;
+        synthVals(maxBits + MAX_BITS_OFFSET,:) = CELPDecode(codeValTest,sCodebook);
+        optimumFPPMSE(maxBits + MAX_BITS_OFFSET) = mean((synthVals(maxBits + MAX_BITS_OFFSET,:) - testVector').^2)/tvPower;
         optimumFPPkBps(maxBits + MAX_BITS_OFFSET) = (maxBits*(FILTER_ORDER + 2*NUM_SUB_FRAMES) + 16*NUM_SUB_FRAMES) * 50 /1000;
     end
 end

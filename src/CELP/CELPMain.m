@@ -27,8 +27,7 @@ xlabel('Fixed-point Decimal bits of precision');
 ylabel('MSE divided by original signal power');
 hold off;
 %comparison of bitrates if gains and excitations have the same encoding
-synthVals = zeros(length(MAX_BITS_RANGE),length(synthVal));
-[optimumFPPMSE,optimumFPPkBps] = CoefficientGainSameQuantizationTest(codeVal,stochasticCodebook,testVector);
+[optimumFPPMSE,optimumFPPkBps,synthVals] = CoefficientGainSameQuantizationTest(codeVal,stochasticCodebook,testVector);
 figure(2)
 plot(MAX_BITS_RANGE,optimumFPPMSE);
 title('Normalized MSE per N bits of quantization, assuming N - 2 fixed-point decimal bits')
@@ -40,7 +39,7 @@ title('Code kBps per N bits of quantization, assuming N - 2 fixed-point decimal 
 xlabel('Bits per Coefficient/Gain');
 ylabel('kBps (20ms/frame times 50 frames)');
 %comparison of bitrates when varying gain and coefficient quantization
-[optimumFPPMSEVarying,optimumFPPkBpsVarying] = CoefficientGainDiffQuantizationTest(codeVal,stochasticCodebook,testVector);
+[optimumFPPMSEVarying,optimumFPPkBpsVarying,synthValsVarying] = CoefficientGainDiffQuantizationTest(codeVal,stochasticCodebook,testVector);
 figure(4);
 hold all;
 %5 and 6 bit quantizations of coefficients have large error, lead to
@@ -69,4 +68,5 @@ plot(1:length(testVector),testVector,'r',1:length(testVector),synthVal,'b');
 title('Syntheses (Red is original, blue is coded)');
 xlabel('Sample');
 ylabel('Magnitude');
-fprintf('MSE: %f\n',mean((testVector - synthVal).^2)/mean(testVector.^2));
+mse = mean((testVector - synthVal).^2)/mean(testVector.^2);
+fprintf('MSE: %f\n',mse);
