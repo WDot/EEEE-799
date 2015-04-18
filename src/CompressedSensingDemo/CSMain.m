@@ -17,6 +17,6 @@ sampleRows = sampleRows(1:m);
 underSampledVector = samplingBasis(sampleRows,:) * sparseVector;
 opts = optimoptions('fmincon','Algorithm','interior-point');
 x = fmincon(@(x)norm(x,1),zeros(1,BLOCK_SIZE),[],[],...
-    samplingBasis(sampleRows,:),underSampledVector,-Inf,Inf,[],opts);
+    samplingBasis(sampleRows,:),underSampledVector,-Inf,Inf),[],opts);
 plot(SAMPLE_SEQUENCE,sparseVector,SAMPLE_SEQUENCE,x);
 legend('Original','Reconstructed');
