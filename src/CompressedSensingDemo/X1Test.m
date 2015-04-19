@@ -6,14 +6,15 @@ function results = X1Test( count, range, m, n )
         for i = 1:count
             for line = 1:length(Cs)
                 samplingVector = Ps{line}(n,m)*Cs{line}(n);
-                sparseVector = X3(k,n)';
+                sparseVector = X1(k,n)';
                 underSampledVector = samplingVector * sparseVector;
- %               cvx_begin quiet
- %                   variable x(n)
- %                   minimize( norm(samplingVector*x-underSampledVector,2) + norm(x,1) )
- %               cvx_end
- %               error = norm(x - sparseVector,2) / norm(sparseVector,2);
-                error = 5;
+                cvx_begin quiet
+                    variable x(n)
+                    minimize( norm(x,1) )
+                    subject to
+                        samplingVector*x == underSampledVector;
+                cvx_end
+                error = norm(x - sparseVector,2) / norm(sparseVector,2);
                 if error < 1e-3
                     results(line,k - min(range) + 1) = results(line,k - min(range) + 1) + 1;
                 end

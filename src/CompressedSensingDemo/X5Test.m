@@ -12,12 +12,13 @@ function [results,stdError] = X5Test( count, m, n )
                 samplingVector = Ps{line}(n,m)*Cs{line}(n);
                 sparseVector = X5(k,n,noiseArg)';
                 underSampledVector = samplingVector * sparseVector;
-    %               cvx_begin quiet
-    %                   variable x(n)
-    %                   minimize( norm(samplingVector*x-underSampledVector,2) + norm(x,1) )
-    %               cvx_end
-    %               error = norm(x - sparseVector,2) / norm(sparseVector,2);
-                samples(noiseArg,count) = 5;
+                cvx_begin quiet
+                    variable x(n)
+                    minimize( norm(x,1) )
+                    subject to
+                        samplingVector*x == underSampledVector;
+                cvx_end
+                samples(noiseArg,count) = norm(x - sparseVector,2) / norm(sparseVector,2);
             end
             results(line,noiseArg) = mean(samples(noiseArg,:));
             stdError(line,noiseArg) = std(samples(noiseArg,:))/sqrt(count);
