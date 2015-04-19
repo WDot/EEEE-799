@@ -1,24 +1,16 @@
+%CHANGE OPTIMIZATION SO THAT Ax=B is a constraint, not an object of
+%minimization
 m = 128;
 n = 512;
-ITERATIONS = 1000;
-kRange = 20:45;
-success = zeros(size(kRange));
-tic
-for k = kRange
-    for i = 1:ITERATIONS
-        samplingVector = P3(n,m)*I2(n);
-        sparseVector = X1(k,n)';
-        underSampledVector = samplingVector * sparseVector;
-        cvx_begin quiet
-            variable x(n)
-            minimize( norm(samplingVector*x-underSampledVector,2) + norm(x,1) )
-        cvx_end
-        error = norm(x - sparseVector,2) / norm(sparseVector,2);
-        if error < 1e-3
-            success(k - min(kRange) + 1) = success(k - min(kRange) + 1) + 1;
-        end
-    end
-end
-save('i2p3x1','success');
-plot(1:n,sparseVector,1:n,x);
-legend('Original','Reconstructed');
+ITERATIONS = 5;
+kRange = 0:50;
+x1Results = X1Test(ITERATIONS,kRange,m,n);
+save('x1Results','x1Results');
+x3Results = X3Test(ITERATIONS,kRange,m,n);
+save('x3Results','x3Results');
+x4Results = X4Test(ITERATIONS,kRange,m,n);
+save('x4Results','x4Results');
+x5Results = X5Test(ITERATIONS,m,n);
+save('x5Results','x5Results');
+x7Results = X7Test(ITERATIONS,kRange,m,n);
+save('x7Results','x7Results');
