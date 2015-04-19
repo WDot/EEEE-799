@@ -1,22 +1,48 @@
 m = 128;
 n = 512;
-ITERATIONS = 2;
-kRange_1_6_7 = 0:1;
-kRange_3_4 = 0:1;
+ITERATIONS = 5;
+kRange_1_6_7 = 20:50;
+kRange_3_4 = 0:50;
 tic
-% x1Results = X1Test(ITERATIONS,kRange_1_6_7,m,n);
-% toc
-% save('x1Results','x1Results');
-% x3Results = X3Test(ITERATIONS,kRange_3_4,m,n);
-% save('x3Results','x3Results');
-% x4Results = X4Test(ITERATIONS,kRange_3_4,m,n);
-% save('x4Results','x4Results');
-%[x5Results,x5stdError] = X5Test(ITERATIONS,m,n);
+x1Job = batch('x1Results = X1Test(ITERATIONS,kRange_1_6_7,m,n)');
+x3Job = batch('x3Results = X3Test(ITERATIONS,kRange_3_4,m,n)');
+x4Job = batch('x4Results = X4Test(ITERATIONS,kRange_3_4,m,n)');
+x5Job = batch('[x5Results,x5stdError] = X5Test(ITERATIONS,m,n)');
+x6Job = batch('[x6Results,x6stdError] = X6Test(ITERATIONS,kRange_1_6_7,m,n)');
+x7Job = batch('x7Results = X7Test(ITERATIONS,kRange_1_6_7,m,n)');
+
+wait(x1Job);
+x1Results = fetchOutputs(x1Job);
+x1Results = x1Results{1,1}.x1Results;
+%save('x1Results','x1Results');
+
+wait(x3Job);
+x3Results = fetchOutputs(x3Job);
+x3Results = x3Results{1,1}.x3Results;
+%save('x3Results','x3Results');
+
+wait(x4Job);
+x4Results = fetchOutputs(x4Job);
+x4Results = x4Results{1,1}.x4Results;
+
+wait(x5Job);
+x5Results = fetchOutputs(x5Job);
+x5stdError = x5Results{1,1}.x5stdError;
+x5Results = x5Results{1,1}.x5Results;
 %save('x5Results','x5Results');
-%[x6Results,x6stdError] = X6Test(ITERATIONS,kRange_1_6_7,m,n);
+
+wait(x6Job);
+x6Results = fetchOutputs(x6Job);
+x6stdError = x6Results{1,1}.x6stdError;
+x6Results = x6Results{1,1}.x6Results;
 %save('x6Results','x6Results');
-x7Results = X7Test(ITERATIONS,kRange_1_6_7,m,n);
-save('x7Results','x7Results');
+
+wait(x7Job);
+x7Results = fetchOutputs(x7Job);
+x7Results = x7Results{1,1}.x7Results;
+%save('x7Results','x7Results');
+
+toc
 
 figure(1)
 hold on;
