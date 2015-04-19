@@ -10,7 +10,7 @@ function results = X7Test( count, range, m, n )
                 underSampledVector = samplingVector * sparseVector;
                 cvx_begin quiet
                     variable x(n)
-                    minimize( norm(x,1) )
+                    minimize( norm(x(2:n) - x(1:(n-1)),1) )
                     subject to
                         samplingVector*x == underSampledVector;
                 cvx_end

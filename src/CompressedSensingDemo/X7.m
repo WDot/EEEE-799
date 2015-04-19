@@ -5,6 +5,6 @@ function X = X7( k, n )
         A(i,i:(i+1)) = [-1, 1];
     end
     A(length(A),length(A)) = -1;
-    X = linsolve(A,y');
+    X = linsolve(A,y')';
 end
 
