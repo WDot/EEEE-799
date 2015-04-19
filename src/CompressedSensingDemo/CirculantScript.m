@@ -1,6 +1,7 @@
+DATA_PATH = strcat(fileparts(mfilename('fullpath')),'/../../data/');
 m = 128;
 n = 512;
-ITERATIONS = 5;
+ITERATIONS = 100;
 kRange_1_6_7 = 20:50;
 kRange_3_4 = 0:50;
 tic
@@ -14,33 +15,36 @@ x7Job = batch('x7Results = X7Test(ITERATIONS,kRange_1_6_7,m,n)');
 wait(x1Job);
 x1Results = fetchOutputs(x1Job);
 x1Results = x1Results{1,1}.x1Results;
-%save('x1Results','x1Results');
+save(strcat(DATA_PATH,'x1Results'),'x1Results');
 
 wait(x3Job);
 x3Results = fetchOutputs(x3Job);
 x3Results = x3Results{1,1}.x3Results;
-%save('x3Results','x3Results');
+save(strcat(DATA_PATH,'x3Results'),'x3Results');
 
 wait(x4Job);
 x4Results = fetchOutputs(x4Job);
 x4Results = x4Results{1,1}.x4Results;
+save(strcat(DATA_PATH,'x4Results'),'x4Results');
 
 wait(x5Job);
 x5Results = fetchOutputs(x5Job);
 x5stdError = x5Results{1,1}.x5stdError;
 x5Results = x5Results{1,1}.x5Results;
-%save('x5Results','x5Results');
+save(strcat(DATA_PATH,'x5Results'),'x5Results');
+save(strcat(DATA_PATH,'x5stdError'),'x5stdError');
 
 wait(x6Job);
 x6Results = fetchOutputs(x6Job);
 x6stdError = x6Results{1,1}.x6stdError;
 x6Results = x6Results{1,1}.x6Results;
-%save('x6Results','x6Results');
+save(strcat(DATA_PATH,'x6Results'),'x6Results');
+save(strcat(DATA_PATH,'x6stdError'),'x6stdError');
 
 wait(x7Job);
 x7Results = fetchOutputs(x7Job);
 x7Results = x7Results{1,1}.x7Results;
-%save('x7Results','x7Results');
+save(strcat(DATA_PATH,'x7Results'),'x7Results');
 
 toc
 
