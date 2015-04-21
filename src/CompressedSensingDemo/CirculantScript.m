@@ -11,7 +11,7 @@ x4Job = batch('x4Results = X4Test(ITERATIONS,kRange_3_4,m,n)');
 x5Job = batch('[x5Results,x5stdError] = X5Test(ITERATIONS,m,n)');
 x6Job = batch('[x6Results,x6stdError] = X6Test(ITERATIONS,kRange_1_6_7,m,n)');
 x7Job = batch('x7Results = X7Test(ITERATIONS,kRange_1_6_7,m,n)');
-
+     
 wait(x1Job);
 x1Results = fetchOutputs(x1Job);
 x1Results = x1Results{1,1}.x1Results;
